@@ -1,27 +1,212 @@
 <!DOCTYPE html>
 <html>
   <head>
+
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <link rel="stylesheet" href="ui/jquery-ui.min.css">
+    <script src="ui/jquery-ui.min.js"></script>
+
   </head>
+
   <body>
-    <script>
 
-      $(document).ready(function(){
-        var $body = $('body');
-        $body.html('');
+    <div id = 'header'>
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
-        }
+      <h1>Home</h1>
 
-      });
+     <button id = "more">Check new Tweets</button>
 
+     <form>
+       <h2> Tweet Something </h2>
+       Username:<br>
+       <input id = 'visitorName' type="text">
+       <br>
+       Your message<br>
+        <input id = 'message' type="text" name="tweet" value="Say something..">
+       <br><br>
+       <input id = 'send' type="submit" value="Tweet">
+      </form>
+
+    </div>
+  <script>
+
+
+  $(document).ready(function(){
+
+    $('#header').css({
+      'background-image': 'url("back.png")'
+   })
+
+    $('h1').css({
+      'width' : '20px',
+      'display' : 'inline-block',
+      'font-size' : '90px'
+      })
+    $('h2').css({
+      'color': 'gray'
+      })
+
+    $('form').css({
+      'position' : 'fixed',
+      'right' : '20px'
+    })
+
+    $('input').css({
+      'color': 'gray'
+    })
+
+   $('#send').css({
+     'width': '90px',
+     'height' : '20',
+     'color': 'white',
+     'background-color' : 'gray',
+     'border-radius': '25'
+   })
+
+    $( function() {
+      $('form').draggable();
+    });
+
+    $( function() {
+      $( 'input' ).resizable();
+    });
+
+    $('#send').on('click', function() {
+     var time = new Date();
+     visitor = $('#visitorName').val();
+     message = $('#message').val();
+     writeTweet(message);
+     var $visitorsTweet = $('<div></div><br><br>');
+     $visitorsTweet.text('@' + visitor + ': ' + message + '|| posted ' + time.getSeconds() + ' seconds ago')
+     $visitorsTweet.appendTo($body);
+     $visitorsTweet.css({
+       'border': 'solid',
+       'color': 'white',
+       'font-family': 'Inconsolata',
+       'font-size' : '70',
+       'background-color' : 'rgb(89, 87, 85, 0.6)',
+       'margin': '100',
+       'padding': '50',
+       'width' : '50%',
+       'position': 'relative',
+       'left' : '250px',
+       'box-shadow' : '10px 20px  rgb(169, 182, 188)'
+
+       })
+    })
+      var $body = $('body');
+      $body.css({
+          'background-color': 'rgb(2, 23, 219)',
+          'color': 'white',
+          'font-size': '190'
+        })
+
+      var index = streams.home.length - 1;
+
+      while(index >= 0){
+
+      var tweet = streams.home[index];
+      var $tweet = $('<div></div><br><br>');
+
+      $tweet.css({
+        'border': 'solid',
+        'color': 'white',
+        'font-family': 'Inconsolata',
+        'font-size' : '70',
+        'background-color' : 'rgb(89, 87, 85, 0.6)',
+        'margin': '100',
+        'padding': '50',
+        'width' : '50%',
+        'position': 'relative',
+        'left' : '250px',
+        'box-shadow' : '10px 20px  rgb(169, 182, 188)',
+
+        })
+
+       $tweet.text('@' + tweet.user + ': ' + tweet.message + '    || posted ' + tweet.created_at.getSeconds() + 'seconds ago.').attr('id', index);
+       $tweet.appendTo($body);
+       $tweet.on('click', function(){
+         var currentUser =  $(this).text().split(' ')[0].slice(1,-1)
+         for (var m = 0; m< streams.users[currentUser].length; m++){
+            var userHome = streams.users[currentUser][m].message;
+            var $userHome = $('<div></div>');
+            $userHome.text('@' + currentUser + ': ' + userHome + ' posted ' + streams.users[currentUser][m].created_at.getSeconds() + 'seconds ago');
+            $userHome.appendTo($body).dialog( {height: '200', width: '600'});
+       }
+     })
+       index -= 1;
+     }
+     $('#more').text('Show new tweets');
+   })
+
+    $(window).load(function() {
+
+    var $body = $('body');
+
+    $('#more').css({
+      'color': 'white',
+      'background-color' : 'rgb(79, 79, 79)',
+      'font-family': 'Inconsolata',
+      'font-size': '250',
+      'font-weight' : 'bold',
+      'height' : '50px',
+      'width' : '200px',
+      'position': 'fixed',
+      'bottom' : '20px'
+    })
+
+
+
+    $('#more').on('click', function(){
+
+    for (var j = 10; j < streams.home.length; j++) {
+
+      var newTweet = streams.home[j];
+      var $newTweet = $('<div></div>');
+
+      $newTweet.attr('id', 'tweetBox')
+
+      $newTweet.css({
+        'border': 'solid',
+        'color': 'white',
+        'font-family': 'Inconsolata',
+        'font-size' : '70',
+        'background-color' : 'rgba(89, 87, 85, 0.2)',
+        'border-color' : 'rgb(255, 255, 153)',
+        'margin-right': '-100',
+        'padding': '50',
+        'width' : '50%',
+        'position': 'relative',
+        'left' : '250px',
+        'box-shadow' : '10px 20px  rgb(169, 182, 188)'
+       })
+
+
+      $newTweet.text('@' + newTweet.user + ': ' + newTweet.message + ' posted ' + newTweet.created_at.getSeconds() + 'seconds ago');
+      $newTweet.appendTo($body);
+
+      $('#more').text('Show ' + (streams.home.length-10)  + ' new tweets');
+
+      $newTweet.on('click', function(){
+
+         var currentUser =  $(this).text().split(' ')[0].slice(1,-1)
+
+         for (var m = 0; m< streams.users[currentUser].length; m++){
+
+           var userHome = streams.users[currentUser][m].message;
+           var $userHome = $('<div></div>');
+
+           $userHome.text('@' + currentUser + ': ' + userHome + ' posted ' + streams.users[currentUser][m].created_at.getSeconds() + 'seconds ago').attr('id', j);
+           $userHome.appendTo($body).dialog( {height: '200', width: '600'});
+
+      }
+     })
+    }
+  })
+})
     </script>
+
   </body>
 </html>
