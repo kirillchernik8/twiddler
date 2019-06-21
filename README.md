@@ -1,2 +1,5 @@
 # twiddler
-This is a project I completed as a student at [hackreactor](http://hackreactor.com). This project was worked on with a pair.
+Simple Twitter-like client. It generates the random message and updates the feed. 
+
+## Build with: 
+jQuery
